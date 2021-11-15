@@ -6,7 +6,6 @@ const {
   deleteBook,
   login
 } = require('../controllers/user-controller');
-const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
