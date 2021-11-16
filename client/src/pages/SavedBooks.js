@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
@@ -52,8 +52,8 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {user.savedBooks.length
-            ? `Viewing ${user.savedBooks.length} saved ${user.savedBooks.length === 1 ? 'book' : 'books'}:`
+          {savedBookIds.length
+            ? `Viewing ${savedBookIds.length} saved ${savedBookIds.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <CardColumns>
@@ -61,20 +61,21 @@ const SavedBooks = () => {
             console.log(savedBookIds, book.bookId, savedBookIds.some(savedBookId => savedBookId === book.bookId));
             
             return (
-              <Card key={book.bookId} border='dark'>
+              <Card key={book.bookId} 
+              border='dark' 
+              style={savedBookIds.some(savedBookId => savedBookId === book.bookId) 
+                ? {}
+                : {display: 'none'}
+              }
+              
+              >
                 {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
                   <p className='small'>Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  <Button
-                    disabled={!savedBookIds.some(savedBookId => savedBookId === book.bookId)}
-                    className='btn-block btn-danger' 
-                    onClick={() => handleDeleteBook(book.bookId)}>
-                    {savedBookIds.some(savedBookId => savedBookId === book.bookId)
-                      ? 'Delete this Book!'
-                      : 'Deleted!'
-                    }
+                  <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
+                    Delete this Book
                   </Button>
                 </Card.Body>
               </Card>
