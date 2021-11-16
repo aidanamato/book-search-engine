@@ -26,6 +26,13 @@ module.exports = {
 
     throw new AuthenticationError('Not logged in');
   },
+
+  async getAllUsers() {
+    const users = await User.find();
+
+    return users;
+  },
+
   // create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
   async createUser(args) {
     const user = await User.create(args);
@@ -87,4 +94,9 @@ module.exports = {
 
     throw new AuthenticationError("Couldn't find user with this id.")
   },
-};
+
+  async deleteUser({ _id }) {
+    const deletedUser = await User.findOneAndDelete({_id});
+    return deletedUser;
+  }
+}

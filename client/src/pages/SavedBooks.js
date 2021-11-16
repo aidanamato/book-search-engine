@@ -3,13 +3,15 @@ import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap
 import { Redirect } from 'react-router-dom';
 
 import Auth from '../utils/auth';
-import { removeBookId } from '../utils/localStorage';
+import { getSavedBookIds, removeBookId } from '../utils/localStorage';
 
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { DELETE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
+  const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  
   const { loading, data } = useQuery(GET_ME);
   const user = data?.me || {};
   
@@ -23,8 +25,9 @@ const SavedBooks = () => {
       });
 
 
-      // upon success, remove book's id from localStorage
+      // upon success, remove book's id from localStorage and update savedBookIds state
       removeBookId(bookId);
+      setSavedBookIds(getSavedBookIds());
     } catch (err) {
       console.error(err);
     }
@@ -55,6 +58,8 @@ const SavedBooks = () => {
         </h2>
         <CardColumns>
           {user.savedBooks.map((book) => {
+            console.log(savedBookIds, book.bookId, savedBookIds.some(savedBookId => savedBookId === book.bookId));
+            
             return (
               <Card key={book.bookId} border='dark'>
                 {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
@@ -62,8 +67,14 @@ const SavedBooks = () => {
                   <Card.Title>{book.title}</Card.Title>
                   <p className='small'>Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
-                    Delete this Book!
+                  <Button
+                    disabled={!savedBookIds.some(savedBookId => savedBookId === book.bookId)}
+                    className='btn-block btn-danger' 
+                    onClick={() => handleDeleteBook(book.bookId)}>
+                    {savedBookIds.some(savedBookId => savedBookId === book.bookId)
+                      ? 'Delete this Book!'
+                      : 'Deleted!'
+                    }
                   </Button>
                 </Card.Body>
               </Card>

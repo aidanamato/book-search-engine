@@ -4,7 +4,10 @@ const {
   getCurrentUser,
   saveBook,
   deleteBook,
-  login
+  login,
+
+  getAllUsers,
+  deleteUser
 } = require('../controllers/user-controller');
 
 const resolvers = {
@@ -14,6 +17,10 @@ const resolvers = {
     },
     user: async (parent, args) => {
       return getSingleUser(args);
+    },
+
+    users: async () => {
+      return getAllUsers();
     }
   },
   Mutation: {
@@ -28,6 +35,10 @@ const resolvers = {
     },
     deleteBook: async (parent, args, { user }) => {
       return deleteBook(args, user);
+    },
+
+    deleteUser: async (parent, args) => {
+      return deleteUser(args);
     }
   }
 };
