@@ -23,7 +23,7 @@ const resolvers = {
     addUser: async (parent, args) => {
       return createUser(args);
     },
-    addBook: async (parent, args, { user }) => {
+    saveBook: async (parent, args, { user }) => {
       return saveBook(args.book, user);
     },
     deleteBook: async (parent, args, { user }) => {
