@@ -2,6 +2,8 @@
 
 ![MIT License](https://img.shields.io/badge/license-MIT-green)
 
+![Screenshot-1](./screenshots/screenshot-1.png)
+
 ## Description
 
 For this project I refactored an existing Google Book Search application. The application's back end was originally set up using a RESTFUL API, and  all of the routing was refactored to use GraphQL instead.
