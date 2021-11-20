@@ -13,7 +13,7 @@ const SavedBooks = () => {
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
   
   const { loading, data } = useQuery(GET_ME);
-  const user = data?.me || {};
+  const userData = data?.me || {};
   
   const [deleteBook] = useMutation(DELETE_BOOK);
 
@@ -54,12 +54,11 @@ const SavedBooks = () => {
         <h2>
           {savedBookIds.length
             ? `Viewing ${savedBookIds.length} saved ${savedBookIds.length === 1 ? 'book' : 'books'}:`
-            : 'You have no saved books!'}
+            : 'You have no saved books!'
+          }
         </h2>
         <CardColumns>
-          {user.savedBooks.map((book) => {
-            console.log(savedBookIds, book.bookId, savedBookIds.some(savedBookId => savedBookId === book.bookId));
-            
+          {userData && userData.savedBooks.map((book) => {
             return (
               <Card key={book.bookId} 
               border='dark' 
