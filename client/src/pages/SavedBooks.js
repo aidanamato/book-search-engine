@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 
 import Auth from '../utils/auth';
-import { getSavedBookIds, removeBookId } from '../utils/localStorage';
+import { removeBookId } from '../utils/localStorage';
 
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { DELETE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
-  const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-  
   const { loading, data } = useQuery(GET_ME);
   const userData = data?.me || {};
   
@@ -23,11 +21,10 @@ const SavedBooks = () => {
       await deleteBook({
         variables: { bookId }
       });
-
-
       // upon success, remove book's id from localStorage and update savedBookIds state
       removeBookId(bookId);
-      setSavedBookIds(getSavedBookIds());
+      // reload page to rerun GET_ME query
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
@@ -52,22 +49,16 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {savedBookIds.length
-            ? `Viewing ${savedBookIds.length} saved ${savedBookIds.length === 1 ? 'book' : 'books'}:`
+          {userData.savedBooks.length
+            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'
           }
         </h2>
         <CardColumns>
-          {userData && userData.savedBooks.map((book) => {
+          {userData.savedBooks && userData.savedBooks.map((book) => {
             return (
               <Card key={book.bookId} 
-              border='dark' 
-              style={savedBookIds.some(savedBookId => savedBookId === book.bookId) 
-                ? {}
-                : {display: 'none'}
-              }
-              
-              >
+              border='dark'>
                 {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
